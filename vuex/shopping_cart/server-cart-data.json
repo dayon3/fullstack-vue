@@ -1,0 +1,16 @@
+[
+    {
+        "id": 4,
+        "title": "The Fullstack Jacket",
+        "description": "Keep warm and protected with the rugged, durable Fullstack lightweight jacket.",
+        "price": 49.99,
+        "quantity": 2
+    },
+    {
+        "id": 3,
+        "title": "The Fullstack Fitted Cap",
+        "description": "Stay comfortable and cool with the first Fullstack Fitted Cap, featuring a normal bill and medium crown.",
+        "price": 15.99,
+        "quantity": 1
+    }
+]
