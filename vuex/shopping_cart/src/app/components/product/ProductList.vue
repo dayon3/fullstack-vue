@@ -39,10 +39,6 @@ export default {
 </script>
 
 <style scoped>
-.tag {
-  cursor: pointer;
-}
-
 .products--header {
   border-bottom: 1px solid #e8e8e8;
   padding-bottom: 15px;

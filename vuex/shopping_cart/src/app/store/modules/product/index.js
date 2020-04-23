@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as types from './mutation-types';
 
 // STATE
 const state = {
@@ -7,7 +8,7 @@ const state = {
 
 // MUTATIONS
 const mutations = {
-  UPDATE_PRODUCT_ITEMS(state, payload) {
+  [types.UPDATE_PRODUCT_ITEMS](state, payload) {
     state.productItems = payload;
   }
 };
@@ -17,7 +18,7 @@ const actions = {
   getProductItems({ commit }) {
     axios
       .get('/api/products')
-      .then(response => commit('UPDATE_PRODUCT_ITEMS', response.data));
+      .then(response => commit(types.UPDATE_PRODUCT_ITEMS, response.data));
   }
 };
 
