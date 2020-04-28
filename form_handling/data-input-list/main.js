@@ -5,8 +5,8 @@ const InputForm = {
         <!-- New Item Field -->
         <div class="field">
           <label>New Item</label>
-          <input v-model="fields.newItem" type="text" placeholder="Add an item!" style="position: relative" />
-          <span style="float: right; position: absolute; right: 0; margin: 9.5px 14px 9.5px 0;">{{ fields.newItem.length }}/20</span>
+          <input v-model="fields.newItem" type="text" placeholder="Add an item!" />
+          <span style="float: right">{{ fields.newItem.length }}/20</span>
           <span style="color: red">{{ fieldErrors.newItem }}</span>
           <span v-if="isNewItemInputLimitExceeded"
             style="color: red; display: block">
@@ -47,32 +47,42 @@ const InputForm = {
             <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
           </div>
         </div>
-        <button class="ui button"
-          :disabled="isNewItemInputLimitExceeded || isNotUrgent">
-          Submit</button>
+        <button v-if="saveStatus === 'SAVING'"
+          disabled class="ui button">
+          Saving...
+        </button>
+        <button v-if="saveStatus === 'SUCCESS'"
+          :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">
+          Saved! Submit another
+        </button>
+        <button v-if="saveStatus === 'ERROR'"
+          :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">
+          Save Failed - Retry?
+        </button>
+        <button v-if="saveStatus === 'READY'"
+          :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">
+          Submit
+        </button>
       </form>
       <div class="ui segment">
         <h4 class="ui header">Items</h4>
         <ul>
+          <div v-if="loading" class="ui active inline loader"></div>
           <li v-for="item in items" class="item">{{ item }}</li>
         </ul>
       </div>
     </div>`,
   data() {
     return {
-      fields: {
-        newItem: '',
-        email: '',
-        urgency: '',
-        termsAndConditions: false,
-      },
       fieldErrors: {
         newItem: undefined,
         email: undefined,
         urgency: undefined,
         termsAndConditions: undefined,
       },
-      items: [],
       loading: false,
       saveStatus: 'READY',
     };
@@ -102,6 +112,7 @@ const InputForm = {
       // Default behavior with no validation issues
       const items = [...this.items, this.fields.newItem];
 
+      // Persist list using apiClient
       this.saveStatus = 'SAVING';
       apiClient
         .saveItems(items)
@@ -143,31 +154,8 @@ const InputForm = {
 
 new Vue({
   el: '#app',
+  store,
   components: {
     'input-form': InputForm,
   },
 });
-
-// Persist and retrieve data
-let apiClient = {
-  loadItems: function () {
-    return {
-      then: function (cb) {
-        setTimeout(() => {
-          cb(JSON.parse(localStorage.items || '[]'));
-        }, 1000);
-      },
-    };
-  },
-  saveItems: function (items) {
-    const success = !!(this.count++ % 2);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!success) return reject({ success });
-        localStorage.items = JSON.stringify(items);
-        return resolve({ success });
-      }, 1000);
-    });
-  },
-  count: 1,
-};
